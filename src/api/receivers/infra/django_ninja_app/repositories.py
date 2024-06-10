@@ -76,9 +76,9 @@ class ReceiverDjangoRepository(ReceiverRepository):
         receivers_qs = self.model.objects.all().annotate(
             search_field=Concat(
                 F('name'),
-                F('cpf_cnpj'),
                 F('pix_key_type'),
                 F('pix_key'),
+                F('status'),
                 output_field=CharField()
             )
         ).order_by('name')

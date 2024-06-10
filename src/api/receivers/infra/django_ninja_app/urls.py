@@ -37,6 +37,19 @@ def create_receiver(
         return 400, Error4xxOut(message="CPF/CNPJ já registrado")
 
 
+@api.patch("/receivers/{receiver_id}", response=UpdateReceiverOut)
+def update_receiver(
+        request,
+        receiver_id: uuid.UUID,
+        payload: UpdateReceiverIn,
+        receiver_service: ReceiverService = anydi.auto
+):
+    try:
+        return receiver_service.update(receiver_id, payload)
+    except NotFoundException:
+        return HttpResponse("Not Found", status=404)
+
+
 @api.get("/receivers/{receiver_id}", response=ReceiverOut)
 def read_receiver(
         request,
@@ -64,7 +77,7 @@ def list_receivers(
     )
 
 
-@api.patch("/receivers/{id}", response=UpdateReceiverOut)
+@api.patch("/receivers/{receiver_id}", response=UpdateReceiverOut)
 def update_receiver(
         request,
         receiver_id: uuid.UUID,
