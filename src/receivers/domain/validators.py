@@ -7,9 +7,12 @@ def validate_pix(pix_key: str, pix_key_type: str) -> None:
         "CNPJ": validate_cnpj,
         "EMAIL": validate_email,
         "TELEFONE": validate_phone,
-        "CHAVE_ALEATORIA": validate_random_key,
+        "CHAVE_ALEATORIA": validate_pix_random_key,
     }
-    validators_funcs[pix_key_type](pix_key)
+    validator_func = validators_funcs.get(pix_key_type)
+    if not validator_func:
+        raise ValueError("Tipo de Chave Pix inválido")
+    validator_func(pix_key)
 
 
 def validate_email(value: str) -> str:
@@ -48,12 +51,12 @@ def validate_phone(value: str) -> str:
     return value
 
 
-def validate_random_key(value: str) -> str:
+def validate_pix_random_key(value: str) -> str:
     pattern = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 
     match = re.match(pattern, value, flags=re.IGNORECASE)
     if not match:
-        raise ValueError("Formato de telefone inválido")
+        raise ValueError("Formato de Chave Aleatória inválido")
     return value
 
 

@@ -2,8 +2,8 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Optional, List, Tuple
 
-from api.receivers.domain.entities import Receiver
-from api.shared.domain.repositories import SearchParams
+from receivers.domain.entities import Receiver
+from shared.domain.repositories import SearchParams
 
 
 class ReceiverSearchParams(SearchParams):

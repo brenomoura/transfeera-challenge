@@ -3,14 +3,13 @@ import uuid
 import anydi
 from django.http import HttpResponse
 from ninja import NinjaAPI, Query
-from ninja.pagination import paginate, PageNumberPagination
 
-from api.receivers.application.dtos import CreateReceiverIn, \
+from receivers.application.dtos import CreateReceiverIn, \
     CreateReceiverOut, ReceiverOut, ReceiverListOut, Error4xxOut, \
     DeleteReceiversIn, DeleteReceiverOut, UpdateReceiverIn, UpdateReceiverOut
-from api.receivers.application.services import ReceiverService
-from api.receivers.domain.repositories import ReceiverSearchParams
-from api.receivers.infra.django_ninja_app.repositories import \
+from receivers.application.services import ReceiverService
+from receivers.domain.repositories import ReceiverSearchParams
+from receivers.infra.django_ninja_app.repositories import \
     AlreadyRegisteredReceiver, NotFoundException
 
 api = NinjaAPI()

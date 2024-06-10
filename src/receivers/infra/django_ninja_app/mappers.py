@@ -1,5 +1,5 @@
-from api.receivers.domain.entities import Receiver, ReceiverPIX
-from api.receivers.infra.django_ninja_app.models import ReceiverModel
+from receivers.domain.entities import Receiver, ReceiverPIX
+from receivers.infra.django_ninja_app.models import ReceiverModel
 
 
 class LoadEntityException(Exception):
@@ -32,6 +32,7 @@ class ReceiverModelMapper:
     def to_model(entity: Receiver) -> ReceiverModel:
         try:
             return ReceiverModel(
+                id=entity.id,
                 name=entity.name,
                 email=entity.email,
                 cpf_cnpj=entity.cpf_cnpj,

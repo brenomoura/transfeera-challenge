@@ -4,7 +4,7 @@ from typing import Optional
 
 from pydantic import BaseModel, field_validator, model_validator
 
-from api.receivers.domain.validators import validate_email, \
+from receivers.domain.validators import validate_email, \
     validate_cpf_cnpj, validate_pix
 
 

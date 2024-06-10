@@ -1,8 +1,8 @@
 from anydi import Module, provider
 
-from api.receivers.application.services import ReceiverService
-from api.receivers.domain.repositories import ReceiverRepository
-from api.receivers.infra.django_ninja_app.repositories import \
+from receivers.application.services import ReceiverService
+from receivers.domain.repositories import ReceiverRepository
+from receivers.infra.django_ninja_app.repositories import \
     ReceiverDjangoRepository
 
 

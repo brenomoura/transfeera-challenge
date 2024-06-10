@@ -1,11 +1,11 @@
 import uuid
 from typing import List, Tuple
 
-from api.receivers.application.dtos import CreateReceiverOut, \
+from receivers.application.dtos import CreateReceiverOut, \
     CreateReceiverIn, UpdateReceiverIn, UpdateReceiverOut, ReceiverOut, \
     DeleteReceiverOut, DeleteReceiversIn
-from api.receivers.domain.entities import ReceiverStatuses
-from api.receivers.domain.repositories import ReceiverRepository, \
+from receivers.domain.entities import ReceiverStatuses
+from receivers.domain.repositories import ReceiverRepository, \
     ReceiverSearchParams
 
 
@@ -14,7 +14,7 @@ class ReceiverService:
     def __init__(self, repo: ReceiverRepository):
         self.repo = repo
 
-    def create(self,create_receiver_data: CreateReceiverIn) -> CreateReceiverOut:
+    def create(self, create_receiver_data: CreateReceiverIn) -> CreateReceiverOut:
         receiver = self.repo.create(create_receiver_data.to_entity())
         return CreateReceiverOut.from_entity(receiver)
 

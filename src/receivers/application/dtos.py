@@ -5,9 +5,9 @@ from ninja import Schema
 from pydantic import field_validator, model_validator
 from typing_extensions import Self
 
-from api.receivers.domain.entities import PixKeyTypes, Receiver, ReceiverPIX, \
+from receivers.domain.entities import PixKeyTypes, Receiver, ReceiverPIX, \
     ReceiverStatuses
-from api.receivers.domain.validators import validate_email, \
+from receivers.domain.validators import validate_email, \
     validate_cpf_cnpj, validate_pix
 
 

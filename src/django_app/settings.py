@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "api.receivers.infra.django_ninja_app",
+    "receivers.infra.django_ninja_app",
     "ninja",
     "anydi.ext.django",
 ]
@@ -88,7 +88,7 @@ ANYDI = {
     "INJECT_URLCONF": "django_app.urls",
     "PATCH_NINJA": True,
     "MODULES": [
-        "api.receivers.infra.django_ninja_app.depency_providers.modules.ReceiverModule",
+        "receivers.infra.django_ninja_app.depency_providers.modules.ReceiverModule",
     ],
 }
 

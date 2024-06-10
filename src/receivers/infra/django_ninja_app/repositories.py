@@ -6,11 +6,11 @@ from django.db.models.functions import Concat
 from django.db.utils import IntegrityError
 from django.forms import model_to_dict
 
-from api.receivers.domain.entities import Receiver
-from api.receivers.domain.repositories import ReceiverRepository, \
+from receivers.domain.entities import Receiver
+from receivers.domain.repositories import ReceiverRepository, \
     ReceiverSearchParams
-from api.receivers.infra.django_ninja_app.mappers import ReceiverModelMapper
-from api.receivers.infra.django_ninja_app.models import ReceiverModel
+from receivers.infra.django_ninja_app.mappers import ReceiverModelMapper
+from receivers.infra.django_ninja_app.models import ReceiverModel
 
 
 class NotFoundException(Exception):

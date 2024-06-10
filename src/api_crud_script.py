@@ -96,7 +96,7 @@ def create_receiver(
 
 
 if __name__ == "__main__":
-    for i in range(1):
+    for i in range(100):
         email = f"TEST.NAME{time.time()}@HAHAHA.COM"
         pixes = [
             ("CPF", generate_cpf()),
