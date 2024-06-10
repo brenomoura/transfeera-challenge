@@ -110,4 +110,4 @@ class DeleteReceiverOut(Schema):
 
 
 class Error4xxOut(Schema):
-    message: str
+    msg: str
