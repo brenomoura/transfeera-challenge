@@ -29,6 +29,8 @@ DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
+ENV = config("ENV", default="prod")
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -87,6 +89,21 @@ DATABASES = {
         "PORT": config("PORT_DB", default="5432"),
     }
 }
+
+# CACHING OPTIONS
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": config("REDIS_URI"),
+    }
+}
+
+if ENV == "dev" and not DEBUG:
+    from fakeredis import FakeConnection
+    CACHES["default"]["OPTIONS"] = {
+        'connection_class': FakeConnection
+    }
+
 # Dependency Injection Settings
 ANYDI = {
     "INJECT_URLCONF": "django_app.urls",
@@ -159,7 +176,6 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

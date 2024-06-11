@@ -15,10 +15,19 @@ services:
       - PASSWORD_DB=1234
       - ALLOWED_HOSTS=*
       - PYTHONUNBUFFERED=1
+      - REDIS_URI=redis://redis_db:6379
 #    env_file:
 #      - ./.env
     ports:
       - "8000:8000"
+    depends_on:
+      - db
+      - redis_db
+
+  redis_db:
+    image: redis:7.2-alpine
+    ports:
+      - "6380:6379"
 
   db:
     image: postgres:15
