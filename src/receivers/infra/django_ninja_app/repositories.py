@@ -80,22 +80,10 @@ class ReceiverDjangoRepository(ReceiverRepository):
         """
         start_index = (search_params.page - 1) * search_params.page_size
         final_index = start_index + search_params.page_size
-        receivers_qs = (
-            self.model.objects.all()
-            .annotate(
-                search_field=Concat(
-                    F("name"),
-                    F("pix_key_type"),
-                    F("pix_key"),
-                    F("status"),
-                    output_field=CharField(),
-                )
-            )
-            .order_by("name")
-        )
+        receivers_qs = self.model.objects.all().order_by("name")
         if search_params.search:
             receivers_qs = receivers_qs.filter(
-                search_field__contains=search_params.search
+                _search_field__contains=search_params.search
             )
         receivers_models = receivers_qs[start_index:final_index]
         return [
