@@ -90,13 +90,14 @@ def create_receiver(
         "pix_key": pix_key,
         "pix_key_type": pix_key_type,
     }
-    response = requests.post("http://127.0.0.1:8000/api/receivers", json=data)
+    response = requests.post("http://127.0.0.1:8000/api/receivers/", json=data)
     if response.status_code in [201, 400, 422]:
         pprint(response.json())
+    print(response)
 
 
 if __name__ == "__main__":
-    for i in range(100):
+    for i in range(10):
         email = f"TEST.NAME{time.time()}@HAHAHA.COM"
         pixes = [
             ("CPF", generate_cpf()),

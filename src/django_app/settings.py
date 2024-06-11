@@ -12,21 +12,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from decouple import config, Csv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-1s=bo09nd=)706t^593p3diy#hi+9-fq3&0bpr78%fi5o^x(px"
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 
 # Application definition
 
@@ -72,17 +72,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "django_app.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": config("NAME_DB"),
+        "USER": config("USER_DB"),
+        "PASSWORD": config("PASSWORD_DB"),
+        "HOST": config("HOST_DB", default="localhost"),
+        "PORT": config("PORT_DB", default="5432"),
     }
 }
-
 # Dependency Injection Settings
 ANYDI = {
     "INJECT_URLCONF": "django_app.urls",
@@ -91,7 +93,6 @@ ANYDI = {
         "receivers.infra.django_ninja_app.depency_providers.modules.ReceiverModule",
     ],
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -111,6 +112,32 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
 APPEND_SLASH = False
 
 # Internationalization
@@ -123,7 +150,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

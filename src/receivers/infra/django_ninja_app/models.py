@@ -27,7 +27,7 @@ class ReceiverModel(BaseModel):
     ]
     name = models.TextField(blank=False)
     email = models.EmailField(max_length=250, null=True, blank=False, unique=True)
-    cpf_cnpj = models.CharField(max_length=14, unique=True)
+    cpf_cnpj = models.CharField(max_length=20, unique=True)
     pix_key_type = models.CharField(max_length=100, choices=PIX_KEY_TYPES)
     pix_key = models.CharField(max_length=140)
     status = models.CharField(max_length=15, choices=RECEIVER_STATUS,
