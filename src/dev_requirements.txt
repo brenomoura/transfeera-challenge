@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest==8.2.2
+pytest-django==4.8.0
+ruff==0.4.8

@@ -1,0 +1,36 @@
+version: "3.5"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: src/containerfile/Dockerfile
+    hostname: api
+    # only for testing
+    environment:
+      - SECRET_KEY=ryMPPY6FPXwQF3nKcwAzpr#WmrVbzDZYMA76wQtArN9Ma!m5@Zo%k
+      - NAME_DB=receiver_app
+      - USER_DB=admin
+      - HOST_DB=db
+      - PASSWORD_DB=1234
+      - ALLOWED_HOSTS=*
+      - PYTHONUNBUFFERED=1
+#    env_file:
+#      - ./.env
+    ports:
+      - "8000:8000"
+
+  db:
+    image: postgres:15
+    hostname: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=receiver_app
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
