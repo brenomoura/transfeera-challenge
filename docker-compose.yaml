@@ -15,13 +15,26 @@ services:
       - PASSWORD_DB=1234
       - ALLOWED_HOSTS=*
       - PYTHONUNBUFFERED=1
+      - REDIS_URI=redis://redis_db:6379
 #    env_file:
 #      - ./.env
     ports:
       - "8000:8000"
     depends_on:
+      redis_db:
+        condition: service_healthy
       db:
         condition: service_healthy
+
+  redis_db:
+    image: redis:7.2-alpine
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
 
   db:
     image: postgres:15

@@ -3,10 +3,11 @@ import uuid
 from typing import List
 from unittest import TestCase
 
+import pytest
 from django.db.models import QuerySet
 from pycpfcnpj import gen
-import pytest
 
+from receivers.application.caching.handler import CacheManager
 from receivers.application.dtos import (
     CreateReceiverIn,
     CreateReceiverOut,
@@ -19,6 +20,7 @@ from receivers.application.dtos import (
 from receivers.application.services import ReceiverService
 from receivers.domain.entities import ReceiverStatuses, PixKeyTypes
 from receivers.domain.repositories import ReceiverSearchParams
+from receivers.infra.django_ninja_app.cache_client import CacheDjangoClient
 from receivers.infra.django_ninja_app.mappers import ReceiverModelMapper
 from receivers.infra.django_ninja_app.models import ReceiverModel
 from receivers.infra.django_ninja_app.repositories import (
@@ -33,11 +35,13 @@ from shared.domain.repositories import PAGE_SIZE
 class TestReceiverService(TestCase):
     def setUp(self):
         self.repo = ReceiverDjangoRepository()
-        self.service = ReceiverService(self.repo)
+        self.cache_client = CacheDjangoClient()
+        self.cache = CacheManager(self.cache_client)
+        self.service = ReceiverService(self.repo, self.cache)
 
     @staticmethod
     def _create_receiver_in_db(
-        status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None
+            status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None
     ) -> ReceiverModel:
         receiver = new_receiver_entity()
         if status:
@@ -54,7 +58,7 @@ class TestReceiverService(TestCase):
 
     @staticmethod
     def _retrieve_receivers_from_db_ordered_alphabetically(
-        receiver_ids: List[uuid.UUID],
+            receiver_ids: List[uuid.UUID],
     ) -> QuerySet:
         return ReceiverModel.objects.filter(id__in=receiver_ids).order_by("name")
 

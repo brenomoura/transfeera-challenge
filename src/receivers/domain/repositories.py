@@ -1,3 +1,4 @@
+import base64
 import uuid
 from abc import ABC, abstractmethod
 from typing import Optional, List, Tuple
@@ -8,6 +9,9 @@ from shared.domain.repositories import SearchParams
 
 class ReceiverSearchParams(SearchParams):
     search: Optional[str] = None
+
+    def base64_encode(self):
+        return base64.b64encode(str(self.dict()).encode()).decode()
 
 
 class ReceiverRepository(ABC):
