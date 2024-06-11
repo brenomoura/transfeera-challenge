@@ -21,13 +21,20 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
-      - redis_db
+      redis_db:
+        condition: service_healthy
+      db:
+        condition: service_healthy
 
   redis_db:
     image: redis:7.2-alpine
     ports:
       - "6380:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
 
   db:
     image: postgres:15
@@ -40,6 +47,11 @@ services:
       - POSTGRES_DB=receiver_app
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d receiver_app"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
