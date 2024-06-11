@@ -4,6 +4,11 @@
 echo "Apply database migrations"
 python manage.py migrate
 
+echo "Pre populate receivers table"
+python manage.py pre_populate_receivers --number 30
+
+python manage.py collectstatic
+
 # Start server
 echo "Starting server"
 
