@@ -6,7 +6,12 @@ import random
 from pycpfcnpj import gen
 
 from receivers.application.dtos import BaseReceiver
-from receivers.domain.entities import Receiver, ReceiverPIX, ReceiverStatuses, PixKeyTypes
+from receivers.domain.entities import (
+    Receiver,
+    ReceiverPIX,
+    ReceiverStatuses,
+    PixKeyTypes,
+)
 from receivers.infra.django_ninja_app.models import ReceiverModel
 
 
@@ -19,15 +24,16 @@ def generate_random_name():
 
 
 def generate_random_phone_number():
-    country_code = random.choice(['', '+55', '55'])
+    country_code = random.choice(["", "+55", "55"])
     ddd = f"{random.randint(1, 9)}{random.randint(0, 9)}"
-    number = '9' + ''.join(str(random.randint(0, 9)) for _ in range(8))
+    number = "9" + "".join(str(random.randint(0, 9)) for _ in range(8))
     return f"{country_code}{ddd}{number}"
 
 
 def generate_random_pix_random_key() -> str:
     def random_hex(length: int) -> str:
-        return ''.join(random.choices(string.hexdigits.lower(), k=length))
+        return "".join(random.choices(string.hexdigits.lower(), k=length))
+
     part1 = random_hex(8)
     part2 = random_hex(4)
     part3 = random_hex(4)
@@ -46,7 +52,8 @@ def new_receiver_entity():
         pix=ReceiverPIX(
             pix_key_type=PixKeyTypes.EMAIL,
             pix_key=generate_random_email(),
-        ))
+        ),
+    )
 
 
 def new_receiver_model():
@@ -81,6 +88,5 @@ def generate_pix(pix_key_type: PixKeyTypes):
     if pix_key_type not in pix_value_generator:
         raise ValueError("error during pix generation")
     return ReceiverPIX(
-        pix_key_type=pix_key_type,
-        pix_key=pix_value_generator[pix_key_type]
+        pix_key_type=pix_key_type, pix_key=pix_value_generator[pix_key_type]
     )

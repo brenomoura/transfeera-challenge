@@ -11,7 +11,6 @@ class ReceiverSearchParams(SearchParams):
 
 
 class ReceiverRepository(ABC):
-
     @abstractmethod
     def get_by_id(self, receiver_id: uuid.UUID) -> Receiver:
         raise NotImplementedError
@@ -21,8 +20,7 @@ class ReceiverRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def update_by_id(self, receiver_id: uuid.UUID,
-                     receiver: Receiver) -> Receiver:
+    def update_by_id(self, receiver_id: uuid.UUID, receiver: Receiver) -> Receiver:
         raise NotImplementedError
 
     @abstractmethod

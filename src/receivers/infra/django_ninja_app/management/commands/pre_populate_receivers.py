@@ -14,7 +14,9 @@ class Command(BaseCommand):
         parser.add_argument("-n", "--number", type=int, default=self.RECEIVERS_NUMBER)
 
     @staticmethod
-    def _create_receiver_in_db(status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None) -> ReceiverModel:
+    def _create_receiver_in_db(
+        status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None
+    ) -> ReceiverModel:
         receiver = new_receiver_entity()
         if status:
             receiver.status = status
@@ -29,5 +31,7 @@ class Command(BaseCommand):
             self._create_receiver_in_db()
 
         self.stdout.write(
-            self.style.SUCCESS('Successfully created the %s receivers' % options["number"])
+            self.style.SUCCESS(
+                "Successfully created the %s receivers" % options["number"]
+            )
         )

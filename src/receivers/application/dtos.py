@@ -5,10 +5,13 @@ from ninja import Schema
 from pydantic import field_validator, model_validator
 from typing_extensions import Self
 
-from receivers.domain.entities import PixKeyTypes, Receiver, ReceiverPIX, \
-    ReceiverStatuses
-from receivers.domain.validators import validate_email, \
-    validate_cpf_cnpj, validate_pix
+from receivers.domain.entities import (
+    PixKeyTypes,
+    Receiver,
+    ReceiverPIX,
+    ReceiverStatuses,
+)
+from receivers.domain.validators import validate_email, validate_cpf_cnpj, validate_pix
 
 
 class BaseReceiver(Schema):
@@ -46,10 +49,7 @@ class BaseReceiver(Schema):
             name=self.name,
             cpf_cnpj=self.cpf_cnpj,
             email=self.email,
-            pix=ReceiverPIX(
-                pix_key=self.pix_key,
-                pix_key_type=self.pix_key_type
-            )
+            pix=ReceiverPIX(pix_key=self.pix_key, pix_key_type=self.pix_key_type),
         )
 
 
@@ -70,12 +70,10 @@ class BaseReceiverOut(BaseReceiver):
         )
 
 
-class CreateReceiverIn(BaseReceiver):
-    ...
+class CreateReceiverIn(BaseReceiver): ...
 
 
-class CreateReceiverOut(BaseReceiverOut):
-    ...
+class CreateReceiverOut(BaseReceiverOut): ...
 
 
 class UpdateReceiverIn(BaseReceiver):
@@ -86,12 +84,10 @@ class UpdateReceiverIn(BaseReceiver):
     pix_key: Optional[str]
 
 
-class UpdateReceiverOut(BaseReceiver):
-    ...
+class UpdateReceiverOut(BaseReceiver): ...
 
 
-class ReceiverOut(BaseReceiverOut):
-    ...
+class ReceiverOut(BaseReceiverOut): ...
 
 
 class ReceiverListOut(Schema):

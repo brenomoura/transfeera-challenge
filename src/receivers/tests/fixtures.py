@@ -1,6 +1,10 @@
 import pytest
 
-from receivers.tests.helpers import new_receiver_entity, new_receiver_model, new_base_model
+from receivers.tests.helpers import (
+    new_receiver_entity,
+    new_receiver_model,
+    new_base_model,
+)
 
 
 @pytest.fixture

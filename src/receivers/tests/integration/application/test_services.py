@@ -7,27 +7,38 @@ from django.db.models import QuerySet
 from pycpfcnpj import gen
 import pytest
 
-from receivers.application.dtos import CreateReceiverIn, CreateReceiverOut, ReceiverOut, UpdateReceiverIn, \
-    UpdateReceiverOut, DeleteReceiversIn, DeleteReceiverOut
+from receivers.application.dtos import (
+    CreateReceiverIn,
+    CreateReceiverOut,
+    ReceiverOut,
+    UpdateReceiverIn,
+    UpdateReceiverOut,
+    DeleteReceiversIn,
+    DeleteReceiverOut,
+)
 from receivers.application.services import ReceiverService
 from receivers.domain.entities import ReceiverStatuses, PixKeyTypes
 from receivers.domain.repositories import ReceiverSearchParams
 from receivers.infra.django_ninja_app.mappers import ReceiverModelMapper
 from receivers.infra.django_ninja_app.models import ReceiverModel
-from receivers.infra.django_ninja_app.repositories import ReceiverDjangoRepository, NotFoundException
+from receivers.infra.django_ninja_app.repositories import (
+    ReceiverDjangoRepository,
+    NotFoundException,
+)
 from receivers.tests.helpers import new_receiver_entity, generate_pix
 from shared.domain.repositories import PAGE_SIZE
 
 
 @pytest.mark.django_db
 class TestReceiverService(TestCase):
-
     def setUp(self):
         self.repo = ReceiverDjangoRepository()
         self.service = ReceiverService(self.repo)
 
     @staticmethod
-    def _create_receiver_in_db(status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None) -> ReceiverModel:
+    def _create_receiver_in_db(
+        status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None
+    ) -> ReceiverModel:
         receiver = new_receiver_entity()
         if status:
             receiver.status = status
@@ -42,7 +53,9 @@ class TestReceiverService(TestCase):
         return ReceiverModel.objects.filter(id__in=[receiver_id]).exists()
 
     @staticmethod
-    def _retrieve_receivers_from_db_ordered_alphabetically(receiver_ids: List[uuid.UUID]) -> QuerySet:
+    def _retrieve_receivers_from_db_ordered_alphabetically(
+        receiver_ids: List[uuid.UUID],
+    ) -> QuerySet:
         return ReceiverModel.objects.filter(id__in=receiver_ids).order_by("name")
 
     def test_receiver_service_create(self):
@@ -89,7 +102,9 @@ class TestReceiverService(TestCase):
             pix_key_type=new_pix_key_type,
             pix_key=new_pix_key,
         )
-        updated_receiver_out = self.service.update(receiver_model.id, update_receiver_data)
+        updated_receiver_out = self.service.update(
+            receiver_model.id, update_receiver_data
+        )
         self.assertTrue(isinstance(updated_receiver_out, UpdateReceiverOut))
         updated_receiver_model = ReceiverModel.objects.get(id=receiver_model.id)
         self.assertEqual(updated_receiver_model.name, new_name)
@@ -114,7 +129,9 @@ class TestReceiverService(TestCase):
             pix_key_type=new_pix_key_type,
             pix_key=new_pix_key,
         )
-        updated_receiver_out = self.service.update(receiver_model.id, update_receiver_data)
+        updated_receiver_out = self.service.update(
+            receiver_model.id, update_receiver_data
+        )
         self.assertTrue(isinstance(updated_receiver_out, UpdateReceiverOut))
         updated_receiver_model = ReceiverModel.objects.get(id=receiver_model.id)
         self.assertNotEqual(updated_receiver_model.name, new_name)
@@ -127,7 +144,10 @@ class TestReceiverService(TestCase):
     def test_receiver_service_update_not_found(self):
         non_existing_receiver_id = uuid.uuid4()
         with pytest.raises(NotFoundException):
-            self.service.update(non_existing_receiver_id, UpdateReceiverIn.from_entity(new_receiver_entity()))
+            self.service.update(
+                non_existing_receiver_id,
+                UpdateReceiverIn.from_entity(new_receiver_entity()),
+            )
 
     def test_receiver_service_delete(self):
         receiver_model_1 = self._create_receiver_in_db()
@@ -156,7 +176,9 @@ class TestReceiverService(TestCase):
         receivers, items_count = self.service.list(search_params)
         self.assertEqual(len(receivers), PAGE_SIZE)
         self.assertEqual(items_count, receiver_quantity)
-        receivers_model = self._retrieve_receivers_from_db_ordered_alphabetically(receiver_model_id_list)
+        receivers_model = self._retrieve_receivers_from_db_ordered_alphabetically(
+            receiver_model_id_list
+        )
         first_item, last_item = receivers_model.first(), receivers_model.last()
         retrieved_receivers_id_list = [receiver.id for receiver in receivers]
         # check if the first item from first page is inside the retrieved receivers from page 2
@@ -174,7 +196,9 @@ class TestReceiverService(TestCase):
         receivers, items_count = self.service.list(search_params)
         self.assertEqual(len(receivers), PAGE_SIZE)
         self.assertEqual(items_count, receiver_quantity)
-        receivers_model = self._retrieve_receivers_from_db_ordered_alphabetically(receiver_model_id_list)
+        receivers_model = self._retrieve_receivers_from_db_ordered_alphabetically(
+            receiver_model_id_list
+        )
         first_item, last_item = receivers_model.first(), receivers_model.last()
         retrieved_receivers_id_list = [receiver.id for receiver in receivers]
         # check if the first item from first page is inside the retrieved receivers from page 2
@@ -204,7 +228,9 @@ class TestReceiverService(TestCase):
         self.assertEqual(items_count, 1)
         self.assertDictEqual(
             receivers[0].dict(),
-            ReceiverOut.from_entity(ReceiverModelMapper.to_entity(receiver_model)).dict()
+            ReceiverOut.from_entity(
+                ReceiverModelMapper.to_entity(receiver_model)
+            ).dict(),
         )
 
     def test_receiver_service_list_filter_by_name(self):
@@ -222,7 +248,9 @@ class TestReceiverService(TestCase):
         self.assertEqual(items_count, 1)
         self.assertDictEqual(
             receivers[0].dict(),
-            ReceiverOut.from_entity(ReceiverModelMapper.to_entity(receiver_model_filter)).dict()
+            ReceiverOut.from_entity(
+                ReceiverModelMapper.to_entity(receiver_model_filter)
+            ).dict(),
         )
 
     def test_receiver_service_list_filter_by_pix_key_type(self):
@@ -230,14 +258,18 @@ class TestReceiverService(TestCase):
         for _ in range(receiver_quantity):
             self._create_receiver_in_db()
         # create one with a different pix_key_type (RANDOM KEY), to allow us to test the filtering by status
-        receiver_model = self._create_receiver_in_db(pix_key_type=PixKeyTypes.CHAVE_ALEATORIA)
+        receiver_model = self._create_receiver_in_db(
+            pix_key_type=PixKeyTypes.CHAVE_ALEATORIA
+        )
         search_params = ReceiverSearchParams(search=receiver_model.pix_key_type)
         receivers, items_count = self.service.list(search_params)
         self.assertEqual(len(receivers), 1)
         self.assertEqual(items_count, 1)
         self.assertDictEqual(
             receivers[0].dict(),
-            ReceiverOut.from_entity(ReceiverModelMapper.to_entity(receiver_model)).dict()
+            ReceiverOut.from_entity(
+                ReceiverModelMapper.to_entity(receiver_model)
+            ).dict(),
         )
 
     def test_receiver_service_list_filter_by_pix_key_value(self):
@@ -245,14 +277,16 @@ class TestReceiverService(TestCase):
         for _ in range(receiver_quantity):
             self._create_receiver_in_db()
         # create one with a different pix_key_type (RANDOM KEY), to allow us to test the filtering by status
-        receiver_model = self._create_receiver_in_db(pix_key_type=PixKeyTypes.CHAVE_ALEATORIA)
+        receiver_model = self._create_receiver_in_db(
+            pix_key_type=PixKeyTypes.CHAVE_ALEATORIA
+        )
         search_params = ReceiverSearchParams(search=receiver_model.pix_key)
         receivers, items_count = self.service.list(search_params)
         self.assertEqual(len(receivers), 1)
         self.assertEqual(items_count, 1)
         self.assertDictEqual(
             receivers[0].dict(),
-            ReceiverOut.from_entity(ReceiverModelMapper.to_entity(receiver_model)).dict()
+            ReceiverOut.from_entity(
+                ReceiverModelMapper.to_entity(receiver_model)
+            ).dict(),
         )
-
-

@@ -2,8 +2,6 @@ import uuid
 from django.db import models
 
 
-# to generate the migrations run `python manage.py makemigrations receivers`
-
 class BaseModel(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -30,9 +28,8 @@ class ReceiverModel(BaseModel):
     cpf_cnpj = models.CharField(max_length=20, unique=True)
     pix_key_type = models.CharField(max_length=100, choices=PIX_KEY_TYPES)
     pix_key = models.CharField(max_length=140)
-    status = models.CharField(max_length=15, choices=RECEIVER_STATUS,
-                              default="DRAFT")
-    # the tech challenge is more related for pix, but I decided to create 
+    status = models.CharField(max_length=15, choices=RECEIVER_STATUS, default="DRAFT")
+    # the tech challenge is more related for pix, but I decided to create
     # some columns for bank info as nullables, since the receivers list on figma
     # contains these infos
     bank_code = models.IntegerField(null=True)
@@ -41,5 +38,5 @@ class ReceiverModel(BaseModel):
     account_code = models.CharField(null=True, max_length=12)
 
     class Meta:
-        db_table = 'receivers'
-        unique_together = ['email', 'cpf_cnpj']
+        db_table = "receivers"
+        unique_together = ["email", "cpf_cnpj"]

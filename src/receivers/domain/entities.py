@@ -4,16 +4,15 @@ from typing import Optional
 
 from pydantic import BaseModel, field_validator, model_validator
 
-from receivers.domain.validators import validate_email, \
-    validate_cpf_cnpj, validate_pix
+from receivers.domain.validators import validate_email, validate_cpf_cnpj, validate_pix
 
 
 class PixKeyTypes(str, Enum):
-    CPF = 'CPF'
-    CNPJ = 'CNPJ'
-    EMAIL = 'EMAIL'
-    TELEFONE = 'TELEFONE'
-    CHAVE_ALEATORIA = 'CHAVE_ALEATORIA'
+    CPF = "CPF"
+    CNPJ = "CNPJ"
+    EMAIL = "EMAIL"
+    TELEFONE = "TELEFONE"
+    CHAVE_ALEATORIA = "CHAVE_ALEATORIA"
 
 
 class ReceiverStatuses(str, Enum):

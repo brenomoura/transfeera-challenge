@@ -1,7 +1,11 @@
 import pytest
 
 from receivers.domain.entities import Receiver
-from receivers.infra.django_ninja_app.mappers import ReceiverModelMapper, LoadEntityException, LoadModelException
+from receivers.infra.django_ninja_app.mappers import (
+    ReceiverModelMapper,
+    LoadEntityException,
+    LoadModelException,
+)
 from receivers.infra.django_ninja_app.models import ReceiverModel
 from receivers.tests.fixtures import receiver, receiver_model
 
@@ -38,4 +42,3 @@ def test_receiver_mapper_entity_to_model(receiver):
 def test_receiver_mapper_entity_to_model_exception(receiver_model):
     with pytest.raises(LoadModelException):
         ReceiverModelMapper.to_model("TEST")
-

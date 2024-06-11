@@ -16,13 +16,14 @@ from shared.domain.repositories import PAGE, PAGE_SIZE
 
 
 class TestReceiversUrls(TestCase):
-
     def setUp(self):
         os.environ["NINJA_SKIP_REGISTRY"] = "yes"
         self.client = TestClient(api)
 
     @staticmethod
-    def _create_receiver_in_db(status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None) -> ReceiverModel:
+    def _create_receiver_in_db(
+        status: ReceiverStatuses = None, pix_key_type: PixKeyTypes = None
+    ) -> ReceiverModel:
         receiver = new_receiver_entity()
         if status:
             receiver.status = status
@@ -37,7 +38,7 @@ class TestReceiversUrls(TestCase):
         return ReceiverModel.objects.filter(id__in=receiver_ids).exists()
 
     def tearDown(self):
-        del os.environ['NINJA_SKIP_REGISTRY']
+        del os.environ["NINJA_SKIP_REGISTRY"]
 
     def test_create_receiver(self):
         data = CreateReceiverIn.from_entity(new_receiver_entity()).dict()
@@ -53,15 +54,15 @@ class TestReceiversUrls(TestCase):
             "cpf_cnpj": "1231",
             "email": "random@",
             "pix_key_type": "non_existent_pix_key_type",
-            "pix_key": "random_pix_value"
+            "pix_key": "random_pix_value",
         }
         response = self.client.post("/receivers/", json=data)
         self.assertEqual(response.status_code, 422)
         response_data = response.json()["detail"]
         expected_errors_message = [
-            'Input should be a valid string',
-            'Value error, Formato de CPF ou CNPJ inválido',
-            'Value error, Formato de E-mail inválido',
+            "Input should be a valid string",
+            "Value error, Formato de CPF ou CNPJ inválido",
+            "Value error, Formato de E-mail inválido",
             "Input should be 'CPF', 'CNPJ', 'EMAIL', 'TELEFONE' or 'CHAVE_ALEATORIA'",
         ]
         for response_data_item in response_data:
@@ -74,7 +75,7 @@ class TestReceiversUrls(TestCase):
         response = self.client.post("/receivers/", json=data)
         self.assertEqual(response.status_code, 400)
         response_data = response.json()
-        self.assertEqual(response_data["msg"], 'CPF/CNPJ ou E-mail já registrado')
+        self.assertEqual(response_data["msg"], "CPF/CNPJ ou E-mail já registrado")
 
     def test_create_receiver_already_registred_email(self):
         receiver_model = self._create_receiver_in_db()
@@ -83,7 +84,7 @@ class TestReceiversUrls(TestCase):
         response = self.client.post("/receivers/", json=data)
         self.assertEqual(response.status_code, 400)
         response_data = response.json()
-        self.assertEqual(response_data["msg"], 'CPF/CNPJ ou E-mail já registrado')
+        self.assertEqual(response_data["msg"], "CPF/CNPJ ou E-mail já registrado")
 
     def test_retrieve_receivers(self):
         receivers_quantity = 20
@@ -156,7 +157,9 @@ class TestReceiversUrls(TestCase):
         for _ in range(receivers_quantity):
             self._create_receiver_in_db()
         # create one as validated, to allow us to test the query params
-        receiver_model = self._create_receiver_in_db(pix_key_type=PixKeyTypes.CHAVE_ALEATORIA)
+        receiver_model = self._create_receiver_in_db(
+            pix_key_type=PixKeyTypes.CHAVE_ALEATORIA
+        )
         response = self.client.get(f"/receivers/?search={receiver_model.pix_key_type}")
         self.assertEqual(response.status_code, 200)
         response_data = response.json()
@@ -186,7 +189,11 @@ class TestReceiversUrls(TestCase):
         response_data = response.json()
         self.assertDictEqual(
             response_data,
-            json.loads(ReceiverOut.from_entity(ReceiverModelMapper.to_entity(receiver_model)).json())
+            json.loads(
+                ReceiverOut.from_entity(
+                    ReceiverModelMapper.to_entity(receiver_model)
+                ).json()
+            ),
         )
 
     def test_retrieve_receiver_detail_not_found(self):
@@ -208,15 +215,15 @@ class TestReceiversUrls(TestCase):
             "cpf_cnpj": "1231",
             "email": "random@",
             "pix_key_type": "non_existent_pix_key_type",
-            "pix_key": "random_pix_value"
+            "pix_key": "random_pix_value",
         }
         response = self.client.patch(f"/receivers/{receiver_model.id}/", json=data)
         self.assertEqual(response.status_code, 422)
         response_data = response.json()["detail"]
         expected_errors_message = [
-            'Input should be a valid string',
-            'Value error, Formato de CPF ou CNPJ inválido',
-            'Value error, Formato de E-mail inválido',
+            "Input should be a valid string",
+            "Value error, Formato de CPF ou CNPJ inválido",
+            "Value error, Formato de E-mail inválido",
             "Input should be 'CPF', 'CNPJ', 'EMAIL', 'TELEFONE' or 'CHAVE_ALEATORIA'",
         ]
         for response_data_item in response_data:
@@ -227,9 +234,7 @@ class TestReceiversUrls(TestCase):
         for _ in range(2):
             receiver_model = self._create_receiver_in_db()
             receiver_model_ids.append(str(receiver_model.id))
-        data = {
-            "ids": receiver_model_ids
-        }
+        data = {"ids": receiver_model_ids}
         response = self.client.post(f"/receivers/delete-multiple/", json=data)
         self.assertEqual(response.status_code, 200)
         response_data = response.json()
@@ -238,9 +243,7 @@ class TestReceiversUrls(TestCase):
 
     def test_delete_empty_ids(self):
         receiver_model_ids = []
-        data = {
-            "ids": receiver_model_ids
-        }
+        data = {"ids": receiver_model_ids}
         response = self.client.post(f"/receivers/delete-multiple/", json=data)
         self.assertEqual(response.status_code, 200)
         response_data = response.json()
