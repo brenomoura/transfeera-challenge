@@ -54,11 +54,26 @@ source  venv/bin/activate
 #### Instalando as Dependências de Desenvolvimento
  
 ```bash
-pip  install  -r  dev_requirements.txt
+pip  install  -r  src/dev_requirements.txt
 ```
-### 2. Configurando o Banco de Dados
-Certifique-se de que o banco de dados PostgreSQL está configurado e em execução conforme as configurações especificadas no arquivo `docker-compose.yaml`.
-### 3. Executando os Testes
+### 2 Configurando as Variáveis de Ambiente
+Crie o arquivo `.env`. Existe o arquivo modelo chamado `.env_template` na raiz do projeto para referência. Para a execução dos testes, é necessário colocar os valores `False` para a variável `DEBUG` e `dev` para `ENV`. Segue exemplo para melhor entendimento:
+```
+SECRET_KEY=<random key>
+NAME_DB=receiver_app
+USER_DB=admin
+PASSWORD_DB=1234
+ALLOWED_HOSTS=*
+ENV=dev
+DEBUG=False
+```
+
+### 3. Configurando o Banco de Dados
+Certifique-se de que o banco de dados PostgreSQL está configurado e em execução conforme as configurações especificadas no arquivo `docker-compose.yaml`. Além disso, também é necessário rodar as migrações caso não tenha rodado:
+```bash
+python src/manage.py migrate
+```
+### 4. Executando os Testes
 Com o ambiente de desenvolvimento configurado e o banco de dados em execução, execute o seguinte comando para rodar os testes com o Pytest:
 ```bash
 pytest
