@@ -30,7 +30,7 @@ ou
 ```
 ./run-containers.sh
 ```
-5. Aguarde até que todos os serviços sejam inicializados. Após a conclusão, a aplicação estará disponível e pronta para uso. OBS: O banco de dados será pré-populado com 30 registros de teste, além disso, para fins de teste, é possível popular com diferentes valores, isso através do comando: 
+5. Aguarde até que todos os serviços sejam inicializados. Após a conclusão, a aplicação estará disponível e pronta para uso. OBS: O banco de dados será pré-populado com 30 registros de teste, além disso, para fins de teste, é possível popular com diferentes valores, isso através do comando (para rodar esse comando, certifique-se de ter configurando o ambiente local, [conforme explicado na seção de execução dos testes](#executando-testes):
 ```
 python manage.py pre_populate_receivers -n <quantidade de registros desejado>
 ```
@@ -54,11 +54,24 @@ source  venv/bin/activate
 #### Instalando as Dependências de Desenvolvimento
  
 ```bash
-pip  install  -r  dev_requirements.txt
+pip  install  -r  src/dev_requirements.txt
 ```
-### 2. Configurando o Banco de Dados
-Certifique-se de que o banco de dados PostgreSQL está configurado e em execução conforme as configurações especificadas no arquivo `docker-compose.yaml`.
-### 3. Executando os Testes
+### 2 Configurando as Variáveis de Ambiente
+Crie o arquivo `.env`. Existe o arquivo modelo chamado `.env_template` na raiz do projeto para referência. Segue exemplo para melhor entendimento:
+```
+SECRET_KEY=<random key>
+NAME_DB=receiver_app
+USER_DB=admin
+PASSWORD_DB=1234
+ALLOWED_HOSTS=*
+```
+
+### 3. Configurando o Banco de Dados
+Certifique-se de que o banco de dados PostgreSQL está configurado e em execução conforme as configurações especificadas no arquivo `docker-compose.yaml`. Além disso, também é necessário rodar as migrações caso não tenha rodado:
+```bash
+python src/manage.py migrate
+```
+### 4. Executando os Testes
 Com o ambiente de desenvolvimento configurado e o banco de dados em execução, execute o seguinte comando para rodar os testes com o Pytest:
 ```bash
 pytest
